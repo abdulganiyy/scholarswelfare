@@ -1,13 +1,10 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { useDonations } from "@/hooks/useDonations";
 import { Donation } from "@/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { io } from "socket.io-client";
 
 const Hero = () => {
-  const queryClient = useQueryClient();
-
   const { data: monthlyDonations } = useQuery({
     queryKey: ["monthly-donations"],
     queryFn: () =>
@@ -16,37 +13,9 @@ const Hero = () => {
       ),
   });
 
-  // 1. Fetch initial messages via HTTP
-  const { data, isLoading } = useQuery({
-    queryKey: ["donations"],
-    queryFn: () =>
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/donation`).then((res) =>
-        res.json(),
-      ),
-  });
+  const { data } = useDonations();
 
-  useEffect(() => {
-    const socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`); // Connects to the host serving the page
-
-    socket.on("connect", () => {
-      console.log("Connected to server!");
-    });
-
-    const handleNewDonation = (newDonation: Donation) => {
-      // Update the cache immediately without a new network request
-      queryClient.setQueryData(["donations"], (oldData: Donation[]) => {
-        return oldData ? [newDonation, ...oldData] : [newDonation];
-      });
-    };
-
-    socket.on("new-donation", handleNewDonation);
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  const donations: Donation[] = data ?? [];
+  const donations: Donation[] = data?.data ?? [];
 
   const stats = [
     {
@@ -133,7 +102,7 @@ const Hero = () => {
             </div>
 
             <div className="mt-6 space-y-4">
-              {donations.map((donation, index) => (
+              {donations.slice(0, 5).map((donation, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between rounded-2xl border border-[#efe8dc] bg-[#fcfbf8] p-5 transition hover:-translate-y-0.5 hover:shadow-md"

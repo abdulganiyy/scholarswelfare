@@ -1,13 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { DonationService } from './donation.service';
+import { GetDonationsDto } from './dto/get-donations.dto';
 
 @Controller('donation')
 export class DonationController {
   constructor(private readonly donationService: DonationService) {}
 
   @Get('')
-  getDonations() {
-    return this.donationService.getDonations();
+  getDonations(@Query() query: GetDonationsDto) {
+    return this.donationService.getDonations(query);
   }
 
   @Get('/monthly')
