@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+
+  id                     String       @id @default(uuid())
+  email                  String       @unique
+  phone                  String?      @unique
+  fullname               String
+  password               String       @unique
+
+  emailVerified          Boolean      @default(false)
+  emailOtpHash           String?
+  emailOtpExpiresAt      DateTime?
+  otp                    String?
+  otpExpiresAt           DateTime?
+  resetPasswordToken     String?
+  resetPasswordExpiresAt DateTime?
+
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  deleted                Boolean      @default(false)
+
+  userRoles              UserRole[]
+
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            RoleName         @unique
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  description     String?
+  rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  role         Role       @relation(fields: [roleId], references: [id])
+
+  @@id([roleId, permissionId])
+}
+
+model Scholar {
+
+  id                     String       @id @default(uuid())
+  email                  String?       @unique
+  phone                  String?      @unique
+  fullname               String
+  
+  slug              String   @unique
+  title             String?
+  bio               String   @db.Text
+
+  // Media
+  profileImage      String?
+  coverImage        String?
+
+  // Verification & trust
+  isVerified        Boolean  @default(false)
+  verificationNote  String?
+
+  // Organization info
+  organizationName  String?
+  mosqueName        String?
+
+  // Location
+  country           String?
+  city              String?
+
+  // Social links
+  websiteUrl        String?
+  youtubeUrl        String?
+  telegramUrl       String?
+  instagramUrl      String?
+  twitterUrl        String?
+  facebookUrl       String?
+
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  deleted                Boolean      @default(false)
+
+}
+
+model Donation {
+  id          String   @id @default(cuid())
+  amount      Int
+  currency    String   @default("NGN")
+  donorName   String?
+  reference   String   @unique
+  createdAt   DateTime @default(now())
+}
+
+enum RoleName {
+  admin
+  user
+}
