@@ -9,7 +9,7 @@ import Hero from "@/components/Hero";
 import Impacts from "@/components/Impacts";
 import Scholars from "@/components/Scholars";
 
-export default function MuslimScholarLandingPage() {
+export default function HomePage() {
   return (
     <>
       <Script
@@ -27,10 +27,10 @@ export default function MuslimScholarLandingPage() {
         <Donate />
 
         {/* IMPACT */}
-        <Impacts />
+        {/* <Impacts /> */}
 
         {/* SCHOLAR SECTION */}
-        <Scholars />
+        {/* <Scholars /> */}
 
         {/* DONATION CTA */}
         <DonationCTA />

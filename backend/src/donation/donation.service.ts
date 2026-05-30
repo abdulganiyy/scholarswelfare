@@ -6,7 +6,7 @@ import { GetDonationsDto } from './dto/get-donations.dto';
 export class DonationService {
   constructor(private prismaService: PrismaService) {}
   async getDonations(query: GetDonationsDto) {
-    const { page = 1, limit = 100, search } = query;
+    const { page = 1, limit = 20, search } = query;
 
     const skip = (page - 1) * limit;
 

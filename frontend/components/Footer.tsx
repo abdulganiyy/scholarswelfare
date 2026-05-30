@@ -10,12 +10,12 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-wrap justify-center gap-6">
-          <a href="#" className="hover:text-[#2e5b3f]">
+          {/* <a href="#" className="hover:text-[#2e5b3f]">
             Privacy Policy
           </a>
           <a href="#" className="hover:text-[#2e5b3f]">
             Donation Transparency
-          </a>
+          </a> */}
           <a href="#" className="hover:text-[#2e5b3f]">
             Contact
           </a>
